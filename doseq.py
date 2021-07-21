@@ -4,6 +4,7 @@
 #    JOB: Distributed Denial Of Service Attack(DDoS)!
 #CodedBy: Oseid Aldary
 #================================#
+
 import sys,socket,os,time,random,threading,requests,signal,optparse
 from urllib.parse import urlparse
 
@@ -3509,6 +3510,7 @@ banner = """
             =-------=-=-=-=-=-=-=-=-=-------=
 
 """
+
 signal.signal(signal.SIGINT, quit)
 signal.signal(signal.SIGTERM,quit)
 print(banner)
@@ -3550,6 +3552,7 @@ threads = options.threads
 attack = options.attack
 help =  options.help
 opts = [target, port, threads, attack, help]
+
 if not any(opt for opt in opts):
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"+wi)
     while True:
@@ -3608,13 +3611,15 @@ if not any(opt for opt in opts):
 else:
     if target:
         if port:
-            if not port.isdigit() or not 0 <= int(port) <= 65535:
+            if not port.isdigit() or not 1 <= int(port) <= 65535:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Port Number Selected"+rd+" !!!")
                 sys.exit(1)
+            else:
+               port = int(port)
         else:
             port = 80
         if threads:
-           if not threads.isdigit() or int(threads) <=0:
+           if not threads.isdigit() or int(threads) <= 0:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
                 sys.exit(1)
            else:
