@@ -4,12 +4,7 @@
 #    JOB: Distributed Denial Of Service Attack(DDoS)!
 #CodedBy: Oseid Aldary
 #================================#
-
-import sys
-if sys.version_info.major <=2:
-    print("[!] This Script Requires 'Python3' To Run")
-    sys.exit(1)
-import socket,os,time,random,threading,requests,signal,optparse
+import sys,socket,os,time,random,threading,requests,signal,optparse
 from urllib.parse import urlparse
 
 ## COLORS ###############
@@ -3715,6 +3710,6 @@ for t in THREADS:
 #####################   END OF TOOL  #########################
 #####################                #########################
 ##############################################################
-#This Tool by Oseid Aldary
+#This Tool by Coded Oseid Aldary
 #Have a nice day :)
 #GoodBye
