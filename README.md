@@ -23,7 +23,7 @@
 
 ***
 
-*Test It On Any **Os** has **python3** installed with **requests** module :)
+* Test It On Any **Os** has **python3** installed with **requests** module :)
 
 ***
   
