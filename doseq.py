@@ -3666,7 +3666,7 @@ time.sleep(1.5)
 os.system("cls || clear")
 print("\n"+banner)
 print(wi+"["+gr+"*"+wi+"]"+yl+"-=-=-=-=-=-=-= "+gr+"Attack Has Been Start On ("+yl+f"{target}:{port}"+gr+")"+yl+" -=-=-=-=-=-=-="+wi+"["+gr+"*"+wi+"]")
-print("["+yl+"I"+wi+"]  Attacking Using["+yl+attack.upper()+wi+"] Requests Will Start On Target...")
+print("["+yl+"I"+wi+"]  Attacking Using[ "+yl+attack.upper()+wi+" ] On Target...")
 print("["+yl+"I"+wi+"] Press "+gr+"' Ctrl+C ' "+wi+"To Stop The Attack")
 time.sleep(1.5)
 
