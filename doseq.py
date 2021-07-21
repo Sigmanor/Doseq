@@ -3710,6 +3710,6 @@ for t in THREADS:
 #####################   END OF TOOL  #########################
 #####################                #########################
 ##############################################################
-#This Tool by Coded Oseid Aldary
+#This Tool Coded By Oseid Aldary
 #Have a nice day :)
 #GoodBye
