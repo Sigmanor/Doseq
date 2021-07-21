@@ -3628,7 +3628,7 @@ else:
                 sys.exit(1)
         else:
             attack = random.choice(attacks)
-    if help:
+    elif help:
         print(parse.usage)
         sys.exit(0)
     else:
