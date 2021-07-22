@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #==============INFO==============#
 # SCRIPT: Doseq
 #    JOB: Distributed Denial Of Service Attack(DDoS)!
@@ -3478,15 +3478,15 @@ def cnet(server="www.google.com",port=80) -> bool:
    return False
 
 def quit(sig,fream):
-    print(rd+"\n["+yl+"!"+rd+"]"+yl+"User requested shutdown. "+rd+"..."+wi)
+    print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
     time.sleep(1)
     if started:
        print(rd+"  ["+yl+"~"+rd+"]"+yl+" Aborting Threads"+rd+"..."+wi)
        kill()
        time.sleep(2.5)
-    print(wi+"\n["+gr+"*"+wi+"] Thanks For Using DoseQ DDoS Script...bye :)")
+    print(wi+"\n["+gr+"*"+wi+"] Thanks For Using Doseq Script :)")
     if started:
-        print("["+gr+"*"+wi+"] I Hope You Using It With Permission"+yl+"!?"+wi)
+        print("["+gr+"*"+wi+"] I Hope You Use It With Permission"+yl+"!?"+wi)
     sys.exit(0)
 
 
@@ -3502,7 +3502,7 @@ banner = """
                  |/     /\     \| 
        (@_       (_     ^^     _) 
   _     ) \_______\__|IIIIII|__/__________________________
- (_)@8@8{}<________|-\IIIIII/-|\033[1;32m_A_N_O_N_Y_M_O_U_S_A_R_A_B\033[1;31m_>
+ (_)@8@8{}<________|-\IIIIII/-|\033[1;32m_A_N_O_N_Y_M_O_U_S_A_R_A_B_\033[1;31m>
         )_/        \          /
        (@           `--------` \033[1;37mDD0$Eq\033[1;31m!\033[1;37m
 
@@ -3578,17 +3578,16 @@ if not any(opt for opt in opts):
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
     while True:
             threads = str(input("THREADS [Default(135)]: ")).strip()
-            if threads and not threads.isdigit():
-                print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
-                sys.exit(1)
+            if not threads:
+                threads = 135
             else:
-                if not threads:
-                    threads = 135
-                else:
-                    threads = int(threads)
-                print("-------------"+"-"*len(str(threads)))
-                print(f"THREADS ==> {threads}")
-                break
+                if not threads.isdigit() or int(threads) <=0:
+                    print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
+                    sys.exit(1)
+                threads = int(threads)
+            print("-------------"+"-"*len(str(threads)))
+            print(f"THREADS ==> {threads}")
+            break
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
     while True:
             attack = str(input("Choice Attack (GET, POST, HEAD, TCP, UDP)[Default(random)]: ")).strip().lower()
@@ -3611,7 +3610,7 @@ if not any(opt for opt in opts):
 else:
     if target:
         if port:
-            if not port.isdigit() or not 1 <= int(port) <= 65535:
+            if not port.isdigit() or not 0 <= int(port) <= 65535:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Port Number Selected"+rd+" !!!")
                 sys.exit(1)
             else:
