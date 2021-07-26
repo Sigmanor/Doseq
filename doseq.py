@@ -3514,7 +3514,7 @@ def update_doseq():
     code = resp.read().strip().decode()
     repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
     if repo_version == __version__:
-        print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
+        print(wi+"  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
         sys.exit(0)
     print(wi+"\n["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating"+wi+"...")
     with open('doseq.py', 'w') as doseq_script:
