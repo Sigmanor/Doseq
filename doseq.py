@@ -5,7 +5,7 @@
 #CodedBy: Oseid Aldary
 #================================#
 
-import sys, socket, os, time, random, threading, requests, signal, optparse, re
+import sys,socket,os,time,random,threading,requests,signal,optparse
 from urllib.parse import urlparse
 import http.client as http
 
@@ -3474,7 +3474,6 @@ def head_attack():
             continue
         if isKilled():break
 
-
 def cnet(server:str, port:int) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
@@ -3504,6 +3503,7 @@ def update_doseq():
            internet = 0
         print(rd+"\n["+yl+"!"+rd+"]"+yl+f" Unable To Check For Updates {'Please Check Your Internet Connection' if not internet else ''} "+rd+"!!!"+wi)
         sys.exit(1)
+    print(wi+"["+gr+"I"+wi+"] Current Version: "+yl+__version__)
     print(rd+"  ["+yl+"~"+rd+"]"+yl+" Check For Updates"+wi+"..."+wi)
     con = http.HTTPSConnection("raw.githubusercontent.com")
     con.request('GET', "/Oseid/Doseq/main/doseq.py")
@@ -3511,14 +3511,15 @@ def update_doseq():
     if resp.status != 200:
         print(rd+"\n["+yl+"!"+rd+"]"+yl+" Unable To Update Error Code: "+str(resp.statuse)+rd+" !!!"+wi)
         sys.exit(1)
-    code = resp.read().strip().decode()
+    code = resp.getresponse().read().strip().decode()
     repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
     if repo_version == __version__:
-        print(wi+"  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
+        print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
         sys.exit(0)
-    print(wi+"\n["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating"+wi+"...")
+    print(wi+"\n["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating To Version: "+yl+repo_version+wi+"...")
     with open('doseq.py', 'w') as doseq_script:
         doseq_script.write(code)
+    print(wi+"\n  ["+gr+"*"+wi+"]"+gr+" Updated"+wi+" Successfully :)")
 
 banner = """
 \033[1;31m
@@ -3577,7 +3578,6 @@ parse.add_option('-p', '--port', type=str, dest='port')
 parse.add_option('-t', '--threads', type=str, dest='threads')
 parse.add_option('-a', '--attack', type=str, dest='attack')
 parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
-
 (options,args) = parse.parse_args()
 target = options.target
 port = options.port
@@ -3607,9 +3607,6 @@ if  target:
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
-elif update:
-    update_doseq()
-    sys.exit(0)
 else:
     if any(opt for opt in opts):
         print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please specify the target because it is required"+rd+" !!!"+wi)
@@ -3630,7 +3627,6 @@ time.sleep(2)
 print("["+gr+"+"+wi+"]"+wi+f" Setting Up Attack "+wi+" ["+gr+target+wi+":"+gr+str(port)+wi+"/"+yl+attack.upper()+wi+"~"+gr+str(threads)+wi+"]\n", end='\r')
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
-
 if not cnet(target,port):
     if cnet('www.google.com',80):
         internet = 1
@@ -3694,7 +3690,6 @@ for _ in range(threads):
 
 for t in THREADS:
     t.join()
-
 ##############################################################
 #####################                #########################
 #####################   END OF TOOL  #########################
