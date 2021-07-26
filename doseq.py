@@ -3511,7 +3511,7 @@ def update_doseq():
     if resp.status != 200:
         print(rd+"\n["+yl+"!"+rd+"]"+yl+" Unable To Update Error Code: "+str(resp.statuse)+rd+" !!!"+wi)
         sys.exit(1)
-    code = resp.getresponse().read().strip().decode()
+    code = resp.read().strip().decode()
     repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
     if repo_version == __version__:
         print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
@@ -3607,6 +3607,9 @@ if  target:
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
+elif update:
+    update_doseq()
+    sys.exit(0)
 else:
     if any(opt for opt in opts):
         print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please specify the target because it is required"+rd+" !!!"+wi)
