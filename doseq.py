@@ -15,6 +15,7 @@ rd="\033[1;31m" #>Red   #
 gr="\033[1;32m" #>Green #
 yl="\033[1;33m" #>Yellow#
 #########################
+doseq = __file__
 __version__ = '1.0.0'
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
@@ -3486,7 +3487,6 @@ def head_attack():
             continue
         if isKilled():break
 
-
 def cnet(server='www.google.com', port=80) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
@@ -3527,7 +3527,7 @@ def update_doseq():
         print(wi+"    ["+gr+"*"+wi+"] This Script Is Up To Date :)")
         sys.exit(0)
     print(wi+"    ["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating To Version:"+wi+" ["+yl+repo_version+wi+"]...")
-    with open('doseq.py', 'w') as doseq_script:
+    with open(doseq, 'w') as doseq_script:
         doseq_script.write(code)
     print(wi+"      ["+gr+"*"+wi+"]"+gr+" Updated"+wi+" Successfully :)")
 
@@ -3565,7 +3565,7 @@ OPTIONS:
     |--------
     | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
     |--------
-    | -d/--delay    <delay number in seconds>                 ::> Specify number of delay time in senconds Default(0.1) (Optional)
+    | -d/--delay    <delay number in seconds>                 ::> Specify number of delay time in seconds Default(0.1) (Optional)
     |--------
     | -u/--update                                             ::> Check For Updates
 -------------
