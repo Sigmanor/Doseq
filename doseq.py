@@ -5,7 +5,7 @@
 #CodedBy: Oseid Aldary
 #================================#
 
-import sys,socket,os,time,random,threading,requests,signal,optparse
+import sys, socket, os, time, random, threading, requests, signal, optparse, re
 from urllib.parse import urlparse
 import http.client as http
 
@@ -3513,7 +3513,7 @@ def update_doseq():
     if resp.status != 200:
         print(rd+"\n["+yl+"!"+rd+"]"+yl+" Unable To Update Error Code: "+str(resp.statuse)+rd+" !!!"+wi)
         sys.exit(1)
-    code = resp.getresponse().read().strip().decode()
+    code = resp.read().strip().decode()
     repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
     if repo_version == __version__:
         print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
