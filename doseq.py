@@ -7,6 +7,7 @@
 
 import sys,socket,os,time,random,threading,requests,signal,optparse
 from urllib.parse import urlparse
+import http.client as http
 
 ## COLORS ###############
 wi="\033[1;37m" #>>White#
@@ -15,7 +16,9 @@ gr="\033[1;32m" #>Green #
 yl="\033[1;33m" #>Yellow#
 #########################
 
+__version__ = '1.0.0'
 headers_useragents = list()
+headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
 headers_useragents.append("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
 headers_useragents.append("Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0")
 headers_useragents.append("Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.3) Gecko/20090913 Firefox/3.5.3")
@@ -3471,7 +3474,8 @@ def head_attack():
             continue
         if isKilled():break
 
-def cnet(server="www.google.com",port=80) -> bool:
+
+def cnet(server:str, port:int) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
       c.close()
@@ -3491,6 +3495,30 @@ def quit(sig,fream):
         print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
 
+
+def update_doseq():
+    if not cnet("raw.githubusercontent.com",80):
+        if cnet('www.google.com', 80):
+            internet = 1
+        else:
+           internet = 0
+        print(rd+"\n["+yl+"!"+rd+"]"+yl+f" Unable To Check For Updates {'Please Check Your Internet Connection' if not internet else ''} "+rd+"!!!"+wi)
+        sys.exit(1)
+    print(rd+"  ["+yl+"~"+rd+"]"+yl+" Check For Updates"+wi+"..."+wi)
+    con = http.HTTPSConnection("raw.githubusercontent.com")
+    con.request('GET', "/Oseid/Doseq/main/doseq.py")
+    resp = con.getresponse()
+    if resp.status != 200:
+        print(rd+"\n["+yl+"!"+rd+"]"+yl+" Unable To Update Error Code: "+str(resp.statuse)+rd+" !!!"+wi)
+        sys.exit(1)
+    code = resp.getresponse().read().strip().decode()
+    repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
+    if repo_version == __version__:
+        print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
+        sys.exit(0)
+    print(wi+"\n["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating"+wi+"...")
+    with open('doseq.py', 'w') as doseq_script:
+        doseq_script.write(code)
 
 banner = """
 \033[1;31m
@@ -3522,13 +3550,15 @@ Usage: python3 ./doseq.py [OPTIONS...]
 OPTIONS:
        |
     |--------
-    | -s <target_(IP,domain,url)>                  ::> Specify target IP [OR] Domain [OR] Url (Required)
+    | -s/--server   <target_(IP,domain,url)>                  ::> Specify target IP [OR] Domain [OR] Url (Required)
     |--------
-    | -p <target_port>                             ::> Specify target port number Default(80) (Optional)
+    | -p/--port     <target_port>                             ::> Specify target port number Default(80) (Optional)
     |--------
-    | -t <threads_number>                          ::> Specify number of threads Default(135) (Optional)
+    | -t/--threads  <threads_number>                          ::> Specify number of threads Default(135) (Optional)
     |--------
-    | -a <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
+    | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
+    |--------
+    | -u/--update                                             ::> Check For Updates
 -------------
 Examples:
         |
@@ -3538,78 +3568,24 @@ Examples:
      | python3 doseq.py -s mydomain.com -p 443
      |--------
      | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp
+     |--------
+     | python3 doseq.py --update
 
 ''', add_help_option = False, version='Doseq version 1.0')
 parse.add_option('-s', '--server', '--target', type=str, dest='target')
 parse.add_option('-p', '--port', type=str, dest='port')
 parse.add_option('-t', '--threads', type=str, dest='threads')
 parse.add_option('-a', '--attack', type=str, dest='attack')
-parse.add_option('-h', '--help', action='store_true', dest='help', default=False)
+parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
 
 (options,args) = parse.parse_args()
 target = options.target
 port = options.port
 threads = options.threads
 attack = options.attack
-help =  options.help
-opts = [target, port, threads, attack, help]
-
-if not any(opt for opt in opts):
-    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"+wi)
-    while True:
-        target = str(input(f"TARGET [?]: ")).strip()
-        if target:
-            print("-----------"+"-"*len(target))
-            print(f"TARGET ==> {target}")
-            break
-    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
-    while True:
-            port = str(input("PORT [Default(80)]: ")).strip()
-            if port and not port.isdigit() or port.isdigit() and not 0 <= int(port) <= 65535:
-                print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Port Number Selected"+rd+" !!!")
-                sys.exit(1)
-            else:
-                if not port:
-                    port = 80
-                else:
-                    port = int(port)
-                print("---------"+"-"*len(str(port)))
-                print(f"PORT ==> {port}")
-                break
-    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
-    while True:
-            threads = str(input("THREADS [Default(135)]: ")).strip()
-            if not threads:
-                threads = 135
-            else:
-                if not threads.isdigit() or int(threads) <=0:
-                    print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
-                    sys.exit(1)
-                threads = int(threads)
-            print("-------------"+"-"*len(str(threads)))
-            print(f"THREADS ==> {threads}")
-            break
-    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
-    while True:
-            attack = str(input("Choice Attack (GET, POST, HEAD, TCP, UDP)[Default(random)]: ")).strip().lower()
-            if attack and attack not in attacks:
-                    print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
-                    sys.exit(1)
-
-            else:
-                if not attack:
-                    attack = random.choice(attacks)
-                else:
-                    attack = attack if attack !='random' else random.choice(attacks)
-                print("-------------"+"-"*len(attack))
-                print(f"Attack ==> {attack}")
-                break
-    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n")
-    time.sleep(1)
-    os.system("cls || clear")
-    print("\n"+banner)
-else:
-    if target:
+update =  options.update
+opts = [target,port,threads,attack,update]
+if  target:
         if not port:
             port = 80
         else:
@@ -3631,19 +3607,13 @@ else:
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
-    elif help:
-        print(parse.usage)
-        sys.exit(0)
-    else:
-       print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please Select The Target First because it is Required"+rd+" !!!"+wi)
-       sys.exit(1)
-print(wi+"["+yl+"~"+wi+"] Check Internet Connection [...]", end='\r')
-time.sleep(2)
-if not cnet():
-    print("["+rd+"-"+wi+"] Check Internet Connection ["+rd+"Fail"+wi+"]\n", end='\r')
-    print("  ["+rd+"!"+wi+"]"+yl+" Please Check Your Internet Connection And Try Again "+rd+"!!!"+wi)
-    sys.exit(1)
-print("["+gr+"+"+wi+"] Check Internet Connection ["+gr+"Connected"+wi+"]\n", end='\r')
+else:
+    if any(opt for opt in opts):
+        print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please specify the target because it is required"+rd+" !!!"+wi)
+        sys.exit(1)
+    print(parse.usage)
+    sys.exit(0)
+
 if target.startswith(("https://", "http://")):
     if target.count("/") == 2:
         target = target + "/"
@@ -3651,11 +3621,20 @@ if target.startswith(("https://", "http://")):
 else:
     url = "http://"+target + "/"
 target = urlparse(url).netloc
+
+print(wi + "[" + yl + "~" + wi + f"] Setting Up Attack " + wi + " [...]", end='\r')
+time.sleep(2)
+print("["+gr+"+"+wi+"]"+wi+f" Setting Up Attack "+wi+" ["+gr+target+wi+":"+gr+str(port)+wi+"/"+yl+attack.upper()+wi+"~"+gr+str(threads)+wi+"]\n", end='\r')
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target,port):
+    if cnet('www.google.com',80):
+        internet = 1
+    else:
+        internet = 0
+
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
-    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+" !!!\n"+wi)
+    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f" :: {'Please Check Your Internet Connection' if not internet else 'Please Check Your Target or port'}"+rd+" !!!\n"+wi)
     sys.exit(1)
 
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
@@ -3708,6 +3687,7 @@ for _ in range(threads):
            THREADS.append(t6)
 
     if isKilled():break
+
 for t in THREADS:
     t.join()
 ##############################################################
