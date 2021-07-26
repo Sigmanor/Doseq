@@ -3474,6 +3474,7 @@ def head_attack():
             continue
         if isKilled():break
 
+
 def cnet(server:str, port:int) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
@@ -3481,6 +3482,7 @@ def cnet(server:str, port:int) -> bool:
       return True
    except socket.error:pass
    return False
+
 
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
