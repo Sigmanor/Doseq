@@ -3607,6 +3607,9 @@ if  target:
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
+elif update:
+     update_doseq()
+     sys.exit(0)
 else:
     if any(opt for opt in opts):
         print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Please specify the target because it is required"+rd+" !!!"+wi)
