@@ -3630,6 +3630,7 @@ time.sleep(2)
 print("["+gr+"+"+wi+"]"+wi+f" Setting Up Attack "+wi+" ["+gr+target+wi+":"+gr+str(port)+wi+"/"+yl+attack.upper()+wi+"~"+gr+str(threads)+wi+"]\n", end='\r')
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
+
 if not cnet(target,port):
     if cnet('www.google.com',80):
         internet = 1
@@ -3693,6 +3694,7 @@ for _ in range(threads):
 
 for t in THREADS:
     t.join()
+
 ##############################################################
 #####################                #########################
 #####################   END OF TOOL  #########################
