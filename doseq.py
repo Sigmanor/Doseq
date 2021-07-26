@@ -3505,7 +3505,7 @@ def update_doseq():
            internet = 0
         print(rd+"\n["+yl+"!"+rd+"]"+yl+f" Unable To Check For Updates {'Please Check Your Internet Connection' if not internet else ''} "+rd+"!!!"+wi)
         sys.exit(1)
-    print(wi+"["+gr+"I"+wi+"] Current Version: "+yl+__version__)
+    print(wi+"["+gr+"I"+wi+"] Current Version: ["+yl+__version__+"]")
     print(rd+"  ["+yl+"~"+rd+"]"+yl+" Check For Updates"+wi+"..."+wi)
     con = http.HTTPSConnection("raw.githubusercontent.com")
     con.request('GET', "/Oseid/Doseq/main/doseq.py")
@@ -3516,12 +3516,12 @@ def update_doseq():
     code = resp.read().strip().decode()
     repo_version = re.findall(r"__version__ = .*",code)[0].split('=')[1].strip("' '")
     if repo_version == __version__:
-        print(wi+"\n  ["+gr+"*"+wi+"] This Script Is Up To Date :)")
+        print(wi+"    ["+gr+"*"+wi+"] This Script Is Up To Date :)")
         sys.exit(0)
-    print(wi+"\n["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating To Version: "+yl+repo_version+wi+"...")
+    print(wi+"    ["+gr+"+"+wi+"] An update has been found :::"+gr+" Updating To Version: ["+yl+repo_version+wi+"]...")
     with open('doseq.py', 'w') as doseq_script:
         doseq_script.write(code)
-    print(wi+"\n  ["+gr+"*"+wi+"]"+gr+" Updated"+wi+" Successfully :)")
+    print(wi+"    ["+gr+"*"+wi+"]"+gr+" Updated"+wi+" Successfully :)")
 
 banner = """
 \033[1;31m
