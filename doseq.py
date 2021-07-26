@@ -3565,7 +3565,7 @@ OPTIONS:
     |--------
     | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
     |--------
-    | -d/--delay    <delay number in seconds>                 ::> Specify number of delay time in senconds Default(no_delay) (Optional)
+    | -d/--delay    <delay number in seconds>                 ::> Specify number of delay time in senconds Default(0.1) (Optional)
     |--------
     | -u/--update                                             ::> Check For Updates
 -------------
