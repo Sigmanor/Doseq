@@ -3489,17 +3489,17 @@ def cnet(server='www.google.com', port=80) -> bool:
    except socket.error:pass
    return False
 
-
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
     time.sleep(1)
-    print(rd+"  ["+yl+"~"+rd+"]"+yl+" Aborting Threads"+rd+"..."+wi)
-    kill()
-    time.sleep(2.5)
+    if started:
+        print(rd+"  ["+yl+"~"+rd+"]"+yl+" Aborting Threads"+rd+"..."+wi)
+        kill()
+        time.sleep(2.5)
     print(wi+"\n["+gr+"*"+wi+"] Thanks For Using Doseq Script :)")
-    print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
+    if started:
+        print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
-
 
 def update_doseq():
     if not cnet("raw.githubusercontent.com",80):
@@ -3539,7 +3539,7 @@ banner = """\033[1;31m
             [---]   by:>\033[1;32m Oseid Aldary\033[1;37m   [---]\033[1;32m
             =-------=-=-=-=-=-=-=-=-=-------=
 """
-
+started = False
 signal.signal(signal.SIGINT, quit)
 signal.signal(signal.SIGTERM,quit)
 print(banner)
@@ -3655,7 +3655,7 @@ print("["+yl+"I"+wi+"] Press "+gr+"' Ctrl+C ' "+wi+"To Stop The Attack")
 time.sleep(1.5)
 
 threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if attack in ['get','post'] else threads
-
+started = True
 for _ in range(threads):
     if attack == 'get':
            t1 = threading.Thread(target=get_attack)
