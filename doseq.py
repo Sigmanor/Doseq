@@ -16,7 +16,7 @@ gr="\033[1;32m" #>Green #
 yl="\033[1;33m" #>Yellow#
 #########################
 
-__version__ = '1.0'
+__version__ = '1.0.0'
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
 headers_useragents.append("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
