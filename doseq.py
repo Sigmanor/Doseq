@@ -5,9 +5,10 @@
 #CodedBy: Oseid Aldary
 #================================#
 
-import sys, socket, os, time, random, threading, requests, signal, optparse, re
+import sys, socket, os, time, random, threading, requests, signal, optparse, re, ctypes
 from urllib.parse import urlparse
 import http.client as http
+libgcc_s = ctypes.CDLL('libgcc_s.so.1')
 
 ## COLORS ###############
 wi="\033[1;37m" #>>White#
@@ -3215,7 +3216,6 @@ headers_useragents.append('Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV
 headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.1 (KHqTML, like Gecko) Chrome/4.0.219.6 Safari/532.1')
 headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)')
 headers_useragents.append('Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.14912/812; U; ru) Presto/2.4.15')
-
 headers_referers = list()
 headers_referers.append('http://www.google.com/?q=')
 headers_referers.append('http://yandex.ru/yandsearch?text=%D1%%D2%?=g.sql()81%..')
