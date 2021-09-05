@@ -20,7 +20,7 @@ yl = "\033[1;33m"  # >Yellow#
 
 version_path = os.path.join('core', 'version.txt')
 
-i = 1
+
 attacks = ["get", "post", "head", "tcp", "udp"]
 os.system("cls || clear")
 
