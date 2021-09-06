@@ -213,9 +213,9 @@ def cnet(server='www.google.com', port=80) -> bool:
 def quit(sig, fream):
     print(rd + "\n[" + yl + "!" + rd + "]" + yl + " User requested shutdown. " + rd + "..." + wi)
     time.sleep(1)
-    threads_len = len(THREADS)
     if started:
-        print(rd + "  [" + yl + "~" + rd + "]" + yl + f" Aborting {threads_len} Threads" + rd + "..." + wi)
+        threads_len = len(THREADS)
+        print(rd + "  [" + yl + "~" + rd + "]" + yl + " Aborting " + wi + f"{threads_len}" + yl + " Threads" + rd + "..." + wi)
         kill()
         while True:
             if threads_len == fin_threads:
