@@ -19,6 +19,25 @@
 
 ***
 
+# Docker
+- docker pull sigmanor/doseq
+
+### Examples
+
+```
+     |--------
+     | docker run sigmanor/doseq:latest python3 doseq.py-s 192.168.1.1
+     |--------
+     | docker run sigmanor/doseq:latest python3 doseq.py -s mydomain.com -p 443
+     |--------
+     | docker run sigmanor/doseq:latest python3 doseq.py -s 192.168.0.22 -p 22 -t 500 -a tcp -d 0.30 -S 0.60
+     |--------
+     | docker run sigmanor/doseq:latest python3 doseq.py --update
+     |--------
+```
+
+***
+
 * Test It On Any **Os** has **python3** and **requests** module installed  :)
 
 ***
