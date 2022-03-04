@@ -387,7 +387,7 @@ fin_threads = 0
 THREADS = list()
 event = threading.Event()
 kill = lambda: event.set()
-isKilled = lambda: event.isSet()
+isKilled = lambda: event.is_set()
 lock = threading.Lock()
 time.sleep(1.5)
 print("[" + gr + "+" + wi + "] Starting " + gr + f"{threads}" + wi + " Threads [" + gr + "DONE" + wi + "]\n", end='\r')
