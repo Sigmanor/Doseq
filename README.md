@@ -8,7 +8,7 @@
 
     - **Options**
           -> command: python3 doseq.py
-              ![doseq2](https://i.imgur.com/8x3MiIe.png)
+              ![doseq2](https://i.imgur.com/W447yY9.png)
 
 ***
 # Installation
